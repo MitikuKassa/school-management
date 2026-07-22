@@ -2,29 +2,23 @@ import { useState, useEffect, useCallback } from "react";
 import api from "../../api";
 
 export default function GradeStudents() {
-  const [assignments, setAssignments] = useState([]);
   const [assessments, setAssessments] = useState([]);
   const [students, setStudents] = useState([]);
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [scores, setScores] = useState({});
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
     try {
-      const [aRes, asRes, sRes] = await Promise.all([
-        api.get("teacher/assignments/"),
+      const [asRes, sRes] = await Promise.all([
         api.get("teacher/assessments/"),
         api.get("teacher/students/"),
       ]);
-      setAssignments(aRes.data);
       setAssessments(asRes.data);
       setStudents(sRes.data);
     } catch { /* ignore */ }
-    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
